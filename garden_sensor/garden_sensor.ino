@@ -26,7 +26,7 @@ const int rfPowerPin = 7;
 const int rfPin = 6;
 
 
-const int timeToSleep = 10;
+const int timeToSleep = 3600;
 const int transmitRepeat = 10;
 
 unsigned long nonce = 10000;
