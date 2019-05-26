@@ -1,6 +1,7 @@
 // Includes
 #include "DHT.h"
 #include <RCSwitch.h>
+#include "LowPower.h"
 
 // Globals
 #define DHTTYPE DHT22
@@ -19,11 +20,13 @@ const int dhtPin = 4;
 
 const int hygroPowerPin = 10;
 
+const int pinLed = 13;
+
 const int rfPowerPin = 7;
 const int rfPin = 6;
 
 
-const int timeToSleep = 2;
+const int timeToSleep = 10;
 const int transmitRepeat = 10;
 
 unsigned long nonce = 10000;
@@ -35,7 +38,13 @@ void setup() {
   Serial.begin(9600);
   write_log("Init app");
   pinMode(dhtPowerPin, INPUT);
-
+  
+  pinMode(pinLed, OUTPUT);
+  digitalWrite(pinLed, HIGH);
+  delay(3000);
+  digitalWrite(pinLed, LOW);
+  pinMode(pinLed, INPUT);
+  
 
 }
 
@@ -57,7 +66,9 @@ void loop() {
   digitalWrite(rfPowerPin, LOW);
   pinMode(rfPowerPin, INPUT);
 
-
+  write_info(">>>Go to sleep");
+  delay(500);
+  sleep_seconds(timeToSleep);
 }
 
 void measure_hum_temp() {
@@ -140,5 +151,11 @@ void write_info(String msg) {
 void write_log(String msg) {
   if (DEBUG == 1) {
     Serial.println("[DEBUG]: " + msg);
+  }
+}
+void sleep_seconds(int seconds)
+{
+  for (int i = 0; i < seconds; i++) { 
+     LowPower.powerDown(SLEEP_1S, ADC_OFF, BOD_OFF); 
   }
 }
